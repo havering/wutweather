@@ -2,10 +2,12 @@ var Twit = require('twit');
 var Weather = require('weather-js');
 
 var T = new Twit({
-
+  
 });
 
-var defaultList = [
+
+function findWeather() {
+	var defaultList = [
 		'San Jose, CA',	
 		'Seattle, WA',	
 		'Portland, OR',	
@@ -101,42 +103,43 @@ var defaultList = [
 
 	var city = defaultList[rand];
 
+	console.log('City is: ' + city);
+
 	var weathering;
 	var thecity;
 	var temp;
 	var desc;
 
-Weather.find({search: city, degreeType: 'F'}, function(err, result) {
-	if(err) console.log(err);
+	Weather.find({search: city, degreeType: 'F'}, function(err, result) {
+		if(err) console.log(err);
 
-	
-	weathering = result;
+		
+		weathering = result;
 
-	// convert to string
-	thecity = JSON.stringify(weathering[0].location.name);
-	temp = JSON.stringify(weathering[0].current.temperature);
-	desc = JSON.stringify(weathering[0].current.skytext);
+		// convert to string
+		thecity = JSON.stringify(weathering[0].location.name);
+		temp = JSON.stringify(weathering[0].current.temperature);
+		desc = JSON.stringify(weathering[0].current.skytext);
 
-	// get rid of quotation marks
-	thecity = city.replace(/\"/g, "");
-	temp = temp.replace(/\"/g, "");
-	desc = desc.replace(/\"/g, "");
+		// get rid of quotation marks
+		thecity = thecity.replace(/\"/g, "");
+		temp = temp.replace(/\"/g, "");
+		desc = desc.replace(/\"/g, "");
 
-	// convert description to lower case since it goes at the end of the tweet
-	desc = desc.toLowerCase();
+		// convert description to lower case since it goes at the end of the tweet
+		desc = desc.toLowerCase();
 
-	console.log(thecity);
-	console.log(temp);
-	console.log(desc);
+		// post the tweet
+		T.post('statuses/update', { status: "The weather in " + thecity + " is " + temp + "F and " + desc + "." }, function(err, data, response) {
+	 		if(err) {
+	    		console.log("There was a problem tweeting the message.", err);
+	 		 }
+		});
+	});
+}
 
-	T.post('statuses/update', { status: "The weather in " + thecity + " is " + temp + "F and " + desc + "." }, function(err, data, response) {
-  if(err) {
-    console.log("There was a problem tweeting the message.", err);
-  }
-});
-
-});
-
+findWeather();
+//setInterval(findWeather, 300000);	// every 5 minutes
 
 
  
