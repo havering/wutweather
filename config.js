@@ -2,10 +2,10 @@ var Twit = require('twit');
 var Weather = require('weather-js');
 
 var T = new Twit({
-  
+
 });
 
-
+// periodically tweet out weather from a finite list of locations
 function findWeather() {
 	var defaultList = [
 		'San Jose, CA',	
@@ -138,7 +138,77 @@ function findWeather() {
 	});
 }
 
-findWeather();
+// listen for incoming @s asking for weather for specified locations
+function listenStream() {
+	var weathering;
+	var thecity;
+	var temp;
+	var desc;
+
+	var stream = T.stream('statuses/filter', { track: '@wutweather' });
+	
+	stream.on('tweet', function(tweet) {
+		var asker = tweet.user.screen_name;
+		var tosplit = tweet.text;
+		//console.log(asker + " tweeted: " + text);
+		// the bot name needs to be removed in order to create a valid search
+		var splarray = tosplit.split(" ");
+
+		var citystring = '';
+
+		for (var i = 1; i < splarray.length; i++) {
+			citystring += splarray[i] + " ";
+		}
+
+		console.log(citystring);
+
+		Weather.find({search: citystring, degreeType: 'F'}, function(err, result) {
+			if (err)  {
+				console.log(err);
+			}
+
+			else {
+				weathering = result;
+
+				// convert to string
+				thecity = JSON.stringify(weathering[0].location.name);
+				temp = JSON.stringify(weathering[0].current.temperature);
+				desc = JSON.stringify(weathering[0].current.skytext);
+
+				// if the result is undefined (API can't find location) then tweet back error instead of undefined
+
+				if (thecity == 'undefined') {
+					T.post('statuses/update', { status: "@" + asker + " Sorry, I couldn't find that city." }, function(err, data, response) {
+				 		if(err) {
+				    		console.log("There was a problem tweeting the message.", err);
+				 		 }
+					});
+				}
+				// otherwise, proceed with tweeting the requested location to the user
+				else {
+					// get rid of quotation marks
+					thecity = thecity.replace(/\"/g, "");
+					temp = temp.replace(/\"/g, "");
+					desc = desc.replace(/\"/g, "");
+
+					// convert description to lower case since it goes at the end of the tweet
+					desc = desc.toLowerCase();
+
+					// post the tweet
+					T.post('statuses/update', { status: "@" + asker + " The weather in " + thecity + " is " + temp + "F and " + desc + "." }, function(err, data, response) {
+				 		if(err) {
+				    		console.log("There was a problem tweeting the message.", err);
+				 		 }
+					});
+				}
+			}		
+		});
+			
+	});
+}
+
+listenStream();
+//findWeather();
 //setInterval(findWeather, 300000);	// every 5 minutes
 
 
