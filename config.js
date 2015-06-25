@@ -160,6 +160,8 @@ function listenStream() {
 			citystring += splarray[i] + " ";
 		}
 
+		citystring = "'" + citystring + "'";
+
 		console.log(citystring);
 
 		Weather.find({search: citystring, degreeType: 'F'}, function(err, result) {
