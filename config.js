@@ -150,7 +150,7 @@ function listenStream() {
 	stream.on('tweet', function(tweet) {
 		var asker = tweet.user.screen_name;
 		var tosplit = tweet.text;
-		//console.log(asker + " tweeted: " + text);
+		
 		// the bot name needs to be removed in order to create a valid search
 		var splarray = tosplit.split(" ");
 
@@ -172,15 +172,19 @@ function listenStream() {
 			else {
 				weathering = result;
 
+				//console.log(typeof(weathering));
+
 				// convert to string
 				thecity = JSON.stringify(weathering[0].location.name);
 				temp = JSON.stringify(weathering[0].current.temperature);
 				desc = JSON.stringify(weathering[0].current.skytext);
 
-				// if the result is undefined (API can't find location) then tweet back error instead of undefined
+				console.log(thecity);
 
-				if (thecity == 'undefined') {
-					T.post('statuses/update', { status: "@" + asker + " Sorry, I couldn't find that city." }, function(err, data, response) {
+				// if the API can't find location, then tweet back error instead of undefined
+
+				if (thecity != citystring) {
+					T.post('statuses/update', { status: '@' + asker + ' Sorry, I couldn\'t find that city.' }, function(err, data, response) {
 				 		if(err) {
 				    		console.log("There was a problem tweeting the message.", err);
 				 		 }
