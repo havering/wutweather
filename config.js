@@ -2,10 +2,7 @@ var Twit = require('twit');
 var Weather = require('weather-js');
 
 var T = new Twit({
-    consumer_key:         'hhS2ynxoS1jS1UZGx0MzruIA8' // Your Consumer Key
-  , consumer_secret:      'UJDpaTKMy5S4WrUMo1T76cN5u4yTKF2Wjy7cAwJWPypVFnzCgs' // Your Consumer Secret
-  , access_token:         '3331541843-HyPHIXR13q32nDWUeAkNVztqlkg1UyDCVmf4PwD' // Your Access Token
-  , access_token_secret:  'xqX3Ay5WnNUeqpkTxDV8wZR2BTyQu1RN7vWw14Q6dIUwW' // Your Access Token Secret
+ 
 });
 
 // periodically tweet out weather from a finite list of locations
