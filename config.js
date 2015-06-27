@@ -2,7 +2,7 @@ var Twit = require('twit');
 var Weather = require('weather-js');
 
 var T = new Twit({
- 
+    
 });
 
 // periodically tweet out weather from a finite list of locations
@@ -179,33 +179,32 @@ function listenStream() {
 
 				console.log(thecity);
 
-				/* need to find a workaround here */
-				// if the API can't find location, then tweet back error instead of undefined
 
-				// if (thecity != citystring) {
+				//get rid of quotation marks
+				thecity = thecity.replace(/\"/g, "");
+				temp = temp.replace(/\"/g, "");
+				desc = desc.replace(/\"/g, "");
+
+				// convert description to lower case since it goes at the end of the tweet
+				desc = desc.toLowerCase();
+
+				// post the tweet
+				T.post('statuses/update', { status: "@" + asker + " The weather in " + thecity + " is " + temp + "F and " + desc + "." }, function(err, data, response) {
+			 		if(err) {
+			    		console.log("There was a problem tweeting the message.", err);
+			 		 }
+				});
+				// }
+				// // if there isn't, then let the user know
+				// else {
 				// 	T.post('statuses/update', { status: '@' + asker + ' Sorry, I couldn\'t find that city.' }, function(err, data, response) {
 				//  		if(err) {
 				//     		console.log("There was a problem tweeting the message.", err);
 				//  		 }
 				// 	});
 				// }
-				//otherwise, proceed with tweeting the requested location to the user
-				//else {
-					//get rid of quotation marks
-					thecity = thecity.replace(/\"/g, "");
-					temp = temp.replace(/\"/g, "");
-					desc = desc.replace(/\"/g, "");
 
-					// convert description to lower case since it goes at the end of the tweet
-					desc = desc.toLowerCase();
-
-					// post the tweet
-					T.post('statuses/update', { status: "@" + asker + " The weather in " + thecity + " is " + temp + "F and " + desc + "." }, function(err, data, response) {
-				 		if(err) {
-				    		console.log("There was a problem tweeting the message.", err);
-				 		 }
-					});
-				//}
+				
 			}		
 		});
 			
