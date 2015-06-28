@@ -2,7 +2,7 @@ var Twit = require('twit');
 var Weather = require('weather-js');
 
 var T = new Twit({
-    
+
 });
 
 // periodically tweet out weather from a finite list of locations
@@ -179,7 +179,7 @@ function listenStream() {
 
 				console.log(thecity);
 
-
+				
 				//get rid of quotation marks
 				thecity = thecity.replace(/\"/g, "");
 				temp = temp.replace(/\"/g, "");
@@ -213,7 +213,7 @@ function listenStream() {
 
 listenStream();
 findWeather();
-setInterval(findWeather, 900000);	// every 15 minutes
+setInterval(findWeather, 3600000);	// once an hour
 
 
  
